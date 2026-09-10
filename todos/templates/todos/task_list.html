@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My To-Do List</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen">
+
+    <div class="max-w-2xl mx-auto px-4 py-8 sm:py-12">
+
+        <div class="bg-white rounded-3xl shadow-2xl p-5 sm:p-8">
+
+            <!-- Heading -->
+            <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-2">
+                My To-Do List
+            </h1>
+
+            <p class="text-center text-gray-500 mb-2">
+                Stay organized and get things done 
+            </p>
+
+            <!-- Task Count -->
+            <p class="text-center text-sm text-gray-400 mb-8">
+                {{ tasks|length }} task(s) in your list
+            </p>
+
+            <!-- Add Task Form -->
+            <form method="POST" class="flex flex-col sm:flex-row gap-3 mb-8">
+                {% csrf_token %}
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="What do you need to do?"
+                    class="flex-1 px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition"
+                >
+                    Add Task
+                </button>
+            </form>
+
+            <!-- Task List -->
+            <div class="space-y-3">
+
+                {% for task in tasks %}
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
+
+                        <!-- Task Title -->
+                        <div class="flex-1">
+
+                            {% if task.completed %}
+
+                                <span class="text-gray-400 line-through break-words">
+                                    {{ task.title }}
+                                </span>
+
+                                <span class="ml-2 text-green-600 font-medium text-sm">
+                                    ✓ Completed
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-gray-800 font-medium break-words">
+                                    {{ task.title }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex flex-wrap gap-2">
+
+                            {% if not task.completed %}
+
+                                <a
+                                    href="{% url 'complete_task' task.id %}"
+                                    class="bg-green-500 hover:bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition"
+                                >
+                                    Complete
+                                </a>
+
+                            {% endif %}
+
+                            <a
+                                href="{% url 'edit_task' task.id %}"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition"
+                            >
+                                Edit
+                            </a>
+
+                            <a
+                                href="{% url 'delete_task' task.id %}"
+                                class="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition"
+                            >
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <!-- Empty State -->
+                    <div class="text-center py-10">
+
+                        <p class="text-gray-400 text-lg">
+                            No tasks yet. Add your first task! 
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <p class="text-center text-gray-500 text-sm mt-6">
+            Built with Django & Tailwind CSS 
+        </p>
+
+    </div>
+
+</body>
+</html>
